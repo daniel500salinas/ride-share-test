@@ -1,0 +1,62 @@
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+<script>
+
+const socketUrl = 'ws://localhost:3000/driver/dashboard';
+
+let accessToken = "YOUR_INITIAL_ACCESS_TOKEN";
+let refreshToken = "YOUR_REFRESH_TOKEN";
+
+function connectSocket() {
+  const socket = io(socketUrl, {
+    auth: { token: accessToken },
+    autoConnect: false,
+  });
+
+  socket.connect();
+
+  socket.on("connect", () => {
+    console.log("Socket connected:", socket.id);
+    socket.emit("subscribe", "driver1");
+  });
+
+  socket.on("location", (data) => {
+    console.log("Location update:", data);
+  });
+
+  socket.on("error", async (error) => {
+    if (error.errorCode === "TOKEN_EXPIRED") {
+      console.log("Token expired. Refreshing...");
+      const newToken = await refreshAccessToken();
+      if (newToken) {
+        accessToken = newToken;
+        socket.auth.token = accessToken;
+        socket.connect(); // Reconnect with new token
+      } else {
+        console.error("Refresh failed. Please login again.");
+      }
+    } else {
+      console.error("Socket error:", error);
+    }
+  });
+
+  return socket;
+}
+
+async function refreshAccessToken() {
+  try {
+    const res = await fetch("/auth/refresh", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ refreshToken }),
+    });
+    const data = await res.json();
+    return data.accessToken;
+  } catch (e) {
+    console.error("Failed to refresh access token", e);
+    return null;
+  }
+}
+
+// Start socket
+connectSocket();
+</script>

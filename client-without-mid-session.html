@@ -1,0 +1,22 @@
+<script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+<script>
+  const socketUrl = 'ws://localhost:3000/driver/dashboard';
+  let accessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkcml2ZXJJZCI6ImRyaXZlcjEiLCJpYXQiOjE3NDc0Mjg3NDQsImV4cCI6MTc0NzQyOTA0NH0.-hPdMDIHld1I27KeUwO_mbLrTPZn_Ru79f2tuDpiHLs";
+
+  const socket = io(socketUrl, {
+    auth: { token: accessToken },
+  });
+
+  socket.on('connect', () => {
+    console.log('Connected', socket.id);
+    socket.emit('subscribe', 'driver1');
+  });
+
+  socket.on('location', (data) => {
+    console.log('Location:', data);
+  });
+
+  socket.on('error', (err) => {
+    console.error('Error:', err);
+  });
+</script>

@@ -1,0 +1,24 @@
+{
+  "name": "rideshare(node)",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --exec ts-node src/server.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@types/express": "^4.17.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/socket.io": "^3.0.1",
+    "typescript": "^5.8.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "jsonwebtoken": "^9.0.2",
+    "rideshare(node)": "file:"
+  }
+}
